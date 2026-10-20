@@ -1,0 +1,9 @@
+{
+  "all": true,
+  "include": [
+    "src/app.js"
+  ],
+  "exclude": [
+    "src/server.js"
+  ]
+}

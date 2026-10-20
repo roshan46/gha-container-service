@@ -1,0 +1,8 @@
+title = "Lab rules plus upstream defaults"
+[extend]
+useDefault = true
+[[rules]]
+id = "lab-synthetic-secret"
+description = "Harmless deterministic training fixture; never a real credential"
+regex = '''LAB_SECRET_[A-Z0-9]{24}'''
+keywords = ["LAB_SECRET_"]

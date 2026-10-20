@@ -1,0 +1,37 @@
+name: Security
+on:
+  workflow_call:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  secrets-and-workflows:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - run: bash scripts/install-tool.sh gitleaks
+      - run: bash scripts/install-tool.sh actionlint
+      - run: mkdir -p reports
+      - name: Scan full history, redact findings
+        run: gitleaks git --redact --report-format json --report-path reports/secrets.json .
+      - name: Validate workflows
+        if: always()
+        run: actionlint -shellcheck=""
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always()
+        with:
+          name: security-${{ github.run_id }}
+          path: reports/
+          retention-days: 3
+          if-no-files-found: ignore

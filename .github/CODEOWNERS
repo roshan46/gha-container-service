@@ -1,0 +1,7 @@
+# Replace @roshan46 with a real owner before enabling required owner review.
+/.github/ @roshan46
+/scripts/ @roshan46
+/infra/ @roshan46
+/template.json @roshan46
+/Dockerfile @roshan46
+
