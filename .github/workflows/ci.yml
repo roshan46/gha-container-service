@@ -66,7 +66,7 @@ jobs:
         run: docker rm -f lab
   publish:
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-    needs: [build, security, codeql]
+    needs: [build, security, codeql, node-quality]
     environment: registry
     runs-on: ubuntu-24.04
     timeout-minutes: 15
