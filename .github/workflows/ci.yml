@@ -20,6 +20,14 @@ jobs:
     permissions:
       contents: read
       security-events: write
+
+  node-quality:
+    permissions:
+      contents: read
+    uses: roshan46/gha-reusable-workflows/.github/workflows/node-quality.yml@e404a35011dc89c1d810ddac3bf5f238dfc8180f
+    with:
+      node-version: '24.14.0'
+
   build:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
@@ -58,7 +66,7 @@ jobs:
         run: docker rm -f lab
   publish:
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-    needs: [build, security, codeql]
+    needs: [build, security, codeql, node-quality]
     environment: registry
     runs-on: ubuntu-24.04
     timeout-minutes: 15
