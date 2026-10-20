@@ -1,10 +1,13 @@
-FROM node:24-bookworm-slim@sha256:a5f4366e834695d5f363b920c104953a535d3a9864d1bdf74566a0ebe01daee5 AS build
+FROM node:24-alpine@sha256:44fce696f38ba8c987c4db89954051000bbd05ffd8d8659ba15ed4a8602e937f AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run lint && npm test && npm audit --audit-level=high && npm prune --omit=dev
-FROM node:24-bookworm-slim@sha256:a5f4366e834695d5f363b920c104953a535d3a9864d1bdf74566a0ebe01daee5
+FROM node:24-alpine@sha256:44fce696f38ba8c987c4db89954051000bbd05ffd8d8659ba15ed4a8602e937f
+# Runtime uses node directly; npm is only needed in the build stage.
+RUN rm -rf /usr/local/lib/node_modules/npm \
+    && rm -f /usr/local/bin/npm /usr/local/bin/npx
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build --chown=node:node /app/src ./src
